@@ -1,4 +1,4 @@
-# Bot
+# Telegram bot
 
 ## Installation of dependencies
 
