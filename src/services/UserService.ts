@@ -1,6 +1,6 @@
-import {injectable} from "tsyringe";
-import {User, UserDocument, IUser} from "../models";
-import {REGION} from "../util/secrets";
+import { injectable } from 'tsyringe';
+import { User, UserDocument, IUser } from '../models';
+import { REGION } from '../util/secrets';
 
 @injectable()
 export class UserService {

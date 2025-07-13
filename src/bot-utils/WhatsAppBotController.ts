@@ -1,7 +1,7 @@
 import http from 'http';
-const express = require('express');
+import express from 'express';
 import bodyParser from "body-parser";
-const morgan = require('morgan');
+import morgan  from  'morgan';
 
 export function startWhatsAppBot() {
     const app = express();

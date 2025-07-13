@@ -1,18 +1,17 @@
-import "reflect-metadata";
-import {container} from "tsyringe";
-import {UserService} from "../services";
-import {BotController} from './BotController';
-import {FlowStep} from './BotFlow';
-import {MessageRegistry, Lang} from './MessageRegistry';
-import {VIBER_BOT_API_KEY, REGION, VIBER_HTTP_PORT, VIBER_WEBHOOK} from '../util/secrets'
+import 'reflect-metadata';
+import { container } from 'tsyringe';
+import { UserService } from '../services';
+import { BotController } from './BotController';
+import { FlowStep } from './BotFlow';
+import { MessageRegistry } from './MessageRegistry';
+import { VIBER_BOT_API_KEY, REGION, VIBER_HTTP_PORT, VIBER_WEBHOOK } from '../util/secrets'
 import {getPublicUrl} from '../util'
 import http from 'http';
 // @ts-ignore
 import {Bot, Events, Message} from 'viber-bot';
 import logger from "../util/logger";
 import {IUser} from "../models";
-import to from "await-to-js";
-import axios from "axios";
+import to from 'await-to-js';
 
 const port = VIBER_HTTP_PORT;
 

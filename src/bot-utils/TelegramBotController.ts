@@ -1,12 +1,12 @@
-import "reflect-metadata";
+import 'reflect-metadat';
 import Telebot from 'telebot';
-import {container} from "tsyringe";
-import {UserService} from "../services";
-import {BotController} from './BotController';
-import {FlowStep} from './BotFlow';
-import {MessageRegistry} from './MessageRegistry';
+import { container } from 'tsyringe';
+import { UserService } from "../services";
+import { BotController } from './BotController';
+import { FlowStep } from './BotFlow';
+import { MessageRegistry } from './MessageRegistry';
 import { TELEGRAM_BOT_API_KEY, REGION } from '../util/secrets'
-import moment from "moment";
+import moment from 'moment';
 
 const userService = container.resolve(UserService);
 const botController = container.resolve(BotController);

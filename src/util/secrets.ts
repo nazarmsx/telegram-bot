@@ -1,5 +1,5 @@
-import logger from "./logger";
-import dotenv from "dotenv";
+import logger from './logger';
+import dotenv from 'dotenv';
 
 export const ENVIRONMENT = process.env.NODE_ENV || 'development';
 const path = `.env.${ENVIRONMENT}`;

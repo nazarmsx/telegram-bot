@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 export type IUser = {
     name?: string;
@@ -43,4 +43,4 @@ const userSchema = new mongoose.Schema({
     messenger: String
 });
 
-export const User = mongoose.model<UserDocument>("users", userSchema);
+export const User = mongoose.model<UserDocument>('users', userSchema);

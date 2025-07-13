@@ -1,10 +1,10 @@
-import {injectable} from "tsyringe";
-import {User, IUser} from "../models";
+import {injectable} from 'tsyringe';
+import {User, IUser} from '../models';
 import axios from 'axios';
-import moment from "moment";
-import logger from "../util/logger";
+import moment from 'moment';
+import logger from '../util/logger';
 import to from 'await-to-js';
-import {EXTERNAL_API} from "../util/secrets";
+import { EXTERNAL_API } from '../util/secrets';
 
 @injectable()
 export class ExternalApiService {
@@ -38,15 +38,18 @@ export class ExternalApiService {
             type_test: user.testType,
             order_source: `${user.messenger}_${user.region === 'kyiv' ? 'kbp' : user.region === 'odesa' ? 'ods' : 'khr'}`
         };
+        
         const reqUrl = `${this.BASE_URL}/test_chat.php`;
         console.log(`FETCHING: ${reqUrl} `, request);
         let [err, resp] = await to(axios.post(reqUrl, request));
         if (err) {
             logger.error(err);
         }
+
         if (resp) {
-            console.log('RESP: ', resp.data);
+            logger.log('RESP: ', resp.data);
         }
+
         return resp.data;
     }
 }

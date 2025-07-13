@@ -1,22 +1,17 @@
 {
-  "name": "test-bot",
+  "name": "telegram-bot",
   "version": "0.1.0",
-  "description": "Users API",
+  "description": "Telegram bot",
   "scripts": {
     "start": "npm run serve",
     "build": "npm run build-ts",
     "serve": "node dist/server.js",
     "start:bot": "cross-env NODE_ENV=kyivbot node dist/bot.js",
-    "start:kyivbot:prod": "cross-env NODE_ENV=kyivbotprod node dist/bot.js",
-    "start:bot:odesa": "cross-env NODE_ENV=odesabot node dist/bot.js",
-    "start:odesabot:prod": "cross-env NODE_ENV=odesabotprod node dist/bot.js",
-    "start:kharkivbot:prod": "cross-env NODE_ENV=kharkivbotprod node dist/bot.js",
     "watch-node": "nodemon dist/server.js",
     "test": "jest --forceExit --coverage --verbose",
     "watch-test": "npm run test -- --watchAll",
     "build-ts": "tsc",
-    "watch-ts": "tsc -w",
-    "restart": "tsc && pm2 restart kyiv-bot && pm2 restart odesa-bot"
+    "watch-ts": "tsc -w"
   },
   "dependencies": {
     "@types/telebot": "^1.2.2",

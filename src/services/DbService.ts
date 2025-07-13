@@ -1,5 +1,4 @@
-import {injectable} from "tsyringe";
-import {User, IUser} from "../models";
+import {injectable} from 'tsyringe';
 
 @injectable()
 export class DBService {

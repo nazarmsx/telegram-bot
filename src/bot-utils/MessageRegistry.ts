@@ -1,4 +1,4 @@
-import {injectable} from "tsyringe";
+import {injectable} from 'tsyringe';
 
 export enum Lang {
     UK = 'uk',

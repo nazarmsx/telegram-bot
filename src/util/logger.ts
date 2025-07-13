@@ -1,4 +1,4 @@
-import { Logger, LoggerOptions, transports } from "winston";
+import { Logger, LoggerOptions, transports } from 'winston';
 
 const options: LoggerOptions = {
     transports: [
@@ -11,7 +11,7 @@ const options: LoggerOptions = {
 
 const logger = new Logger(options);
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
     logger.debug("Logging initialized at debug level");
 }
 
