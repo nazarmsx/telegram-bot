@@ -1,17 +1,17 @@
 import 'reflect-metadata';
 import { container } from 'tsyringe';
+import to from 'await-to-js';
 import { UserService } from '../services';
 import { BotController } from './BotController';
 import { FlowStep } from './BotFlow';
 import { MessageRegistry } from './MessageRegistry';
 import { VIBER_BOT_API_KEY, REGION, VIBER_HTTP_PORT, VIBER_WEBHOOK } from '../util/secrets'
-import {getPublicUrl} from '../util'
+import { getPublicUrl } from '../util'
 import http from 'http';
 // @ts-ignore
-import {Bot, Events, Message} from 'viber-bot';
-import logger from "../util/logger";
-import {IUser} from "../models";
-import to from 'await-to-js';
+import { Bot, Events, Message} from 'viber-bot';
+import logger from '../util/logger';
+import { IUser } from '../models';
 
 const port = VIBER_HTTP_PORT;
 
@@ -22,8 +22,9 @@ const messageRegistry = container.resolve(MessageRegistry);
 const bot = new Bot({
     authToken: VIBER_BOT_API_KEY,
     name: 'Test Kyiv bot',
-    avatar: "http://viber.com/avatar.jpg"
+    avatar: 'http://viber.com/avatar.jpg'
 });
+
 bot.on(Events.MESSAGE_RECEIVED, async (message: any, response: any) => {
     const chatId = response.userProfile.id;
     let user = await userService.findUserByChatId(chatId);
@@ -50,19 +51,18 @@ bot.on(Events.MESSAGE_RECEIVED, async (message: any, response: any) => {
     }
 });
 
-
 export async function startViberBot() {
     let publicUrl: string = VIBER_WEBHOOK;
     if(!publicUrl){
         let [err, ngRockProxyUrl] = await to(getPublicUrl());
         if (err) {
-            console.log('Can not connect to ngrok server. Is it running?');
+            logger.log('Can not connect to ngrok server. Is it running?');
             logger.error(err);
             return
         }
         publicUrl = ngRockProxyUrl
     }
-console.log(publicUrl)
+
     if (publicUrl) {
         http.createServer(bot.middleware()).listen(port, () => bot.setWebhook(publicUrl));
     }
@@ -86,27 +86,29 @@ function buildKeyBoard(step: FlowStep, lang: string) {
         const text = messageRegistry.getTranslations(lang)[btn.key] ? messageRegistry.getTranslations(lang)[btn.key] : btn.key;
         if (btn.url) {
             return {
-                "Columns": 6,
-                "ActionType": 'open-url',
-                "ActionBody": btn.url,
-                "Text": text,
-                "TextSize": "regular",
-                "ReplyType": "query"
+                'Columns': 6,
+                'ActionType': 'open-url',
+                'ActionBody': btn.url,
+                'Text': text,
+                'TextSize': 'regular',
+                'ReplyType': 'query'
             };
         }
+
         return {
-            "Columns": columnsNumberMapper[step.buttons.length] ? columnsNumberMapper[step.buttons.length] : 2,
-            "ActionType": "reply",
-            "ActionBody": `callbackQuery_${step.key}=${btn.value}`,
-            "Text": text,
-            "TextSize": "regular",
-            "ReplyType": "query"
+            'Columns': columnsNumberMapper[step.buttons.length] ? columnsNumberMapper[step.buttons.length] : 2,
+            'ActionType': 'reply',
+            'ActionBody': `callbackQuery_${step.key}=${btn.value}`,
+            'Text': text,
+            'TextSize': 'regular',
+            'ReplyType': 'query'
         };
     });
+    
     buttons = buttons.concat(getRestartBtn(step, lang));
     return {
-        "Type": "keyboard",
-        "Buttons": buttons
+        'Type': 'keyboard',
+        'Buttons': buttons
     };
 }
 
@@ -122,16 +124,16 @@ async function askNextQuestion(chatId: string, response: any) {
 
 function buildAskContactKeyboard(step: FlowStep, lang: string) {
     return {
-        "Type": "keyboard",
-        "Buttons": [
+        'Type': 'keyboard',
+        'Buttons': [
             {
-                "Columns": 6,
-                "Rows": 1,
-                "ActionType": 'share-phone',
-                "ActionBody": '',
-                "TextSize": "regular",
-                "ReplyType": "query",
-                "Text": messageRegistry.getTranslations(lang).sharePhoneNumberViber
+                'Columns': 6,
+                'Rows': 1,
+                'ActionType': 'share-phone',
+                'ActionBody': '',
+                'TextSize': 'regular',
+                'ReplyType': 'query',
+                'Text': messageRegistry.getTranslations(lang).sharePhoneNumberViber
             },
             getRestartBtn(step, lang)
         ]
@@ -210,8 +212,8 @@ async function handleContactMessage(message: any, response: any) {
 
 async function sendFinalMessage(user: IUser, step: FlowStep, response: any) {
     await response.send(new Message.Text(messageRegistry.getTranslations(user.lang).finalMessage, {
-        "Type": "keyboard",
-        "Buttons": [
+        'Type': 'keyboard',
+        'Buttons': [
             getRestartBtn(step, user.lang)
         ]
     }, undefined, null, null, 7));
@@ -220,12 +222,12 @@ async function sendFinalMessage(user: IUser, step: FlowStep, response: any) {
 
 function getRestartBtn(step: FlowStep, lang: string) {
     return {
-        "Columns": 6,
-        "Rows": 1,
-        "ActionType": "reply",
-        "ActionBody": `restart`,
-        "Text": step.isLast ? messageRegistry.getTranslations(lang).newRequest : messageRegistry.getTranslations(lang).startFromBeginning,
-        "TextSize": "regular",
-        "ReplyType": "query"
+        'Columns': 6,
+        'Rows': 1,
+        'ActionType': 'reply',
+        'ActionBody': `restart`,
+        'Text': step.isLast ? messageRegistry.getTranslations(lang).newRequest : messageRegistry.getTranslations(lang).startFromBeginning,
+        'TextSize': 'regular',
+        'ReplyType': 'query'
     }
 }

@@ -1,12 +1,13 @@
 import 'reflect-metadat';
 import Telebot from 'telebot';
+import moment from 'moment';
 import { container } from 'tsyringe';
 import { UserService } from "../services";
 import { BotController } from './BotController';
 import { FlowStep } from './BotFlow';
 import { MessageRegistry } from './MessageRegistry';
 import { TELEGRAM_BOT_API_KEY, REGION } from '../util/secrets'
-import moment from 'moment';
+
 
 const userService = container.resolve(UserService);
 const botController = container.resolve(BotController);
@@ -60,18 +61,19 @@ bot.on(['/start'], async (msg) => {
         const language = messageRegistry.isLanguageSupported(msg.from.language_code) ? msg.from.language_code : 'en';
         let replyMarkup = bot.keyboard([
             [BUTTONS[`restart_${language}`].label],
-        ], {resize: true});
+        ], { resize: true });
         const regionName  = messageRegistry.getTranslations(language)[REGION === 'kyiv'? 'boryspil' : REGION];
         const greetingText = messageRegistry.getGreetingMessage(language,regionName);
         await bot.sendMessage(chatId, greetingText, {replyMarkup});
         const user = await userService.findUserByChatId(chatId);
-        if(user){
+        if (user) {
             await userService.updateUser(chatId, {
                 chatId, region: REGION, messenger: 'telegram', lang: language, stepId: null,
                 name: null, gender: null,birthDate: null,email: null,
                 phoneNumber: null, testDate: null, testPurpose: null, phoneNumberIsRegisteredInDiia: null,testType: null, lastMessageId: null,
             });
         }
+
         await botController.start(chatId, 'telegram');
         await askNextQuestion(chatId);
     } catch (e) {
@@ -87,11 +89,13 @@ bot.on('text', async (msg) => {
         if (currentStep.key === 'getPhoneNumber') {
             return await handlePhoneNumberSet(msg, msg.text);
         }
+
         if (currentStep.type === 'date' && !moment(msg.text, 'DD-MM-YYYY').isValid()) {
             const user = await userService.findUserByChatId(chatId);
             await bot.sendMessage(chatId, messageRegistry.getTranslations(user.lang).wrongDateFormat, {});
             return await askNextQuestion(chatId);
         }
+
         await botController.saveStep(chatId, msg.text);
         await askNextQuestion(chatId);
         return;
@@ -107,16 +111,19 @@ bot.on('/profile', async (msg) => {
     const user = await userService.findUserByChatId(chatId);
     bot.sendMessage(chatId, JSON.stringify(user, null, 4));
 });
+
 bot.on('callbackQuery', async (msg) => {
     const chatId = msg.message.chat.id;
     const currentStep = await botController.getNextStep(chatId);
     if (currentStep.key === 'getLanguage') {
         await handleLanguageChange(msg, msg.data.replace(`${currentStep.key}=`, ''));
     }
+
     if (currentStep.buttons) {
         const values = currentStep.buttons.map((btn) => {
             return `${currentStep.key}=${btn.value}`
         });
+
         if (values.indexOf(msg.data) !== -1) {
             await botController.saveStep(chatId, msg.data.replace(`${currentStep.key}=`, ''));
             await askNextQuestion(chatId);
@@ -133,11 +140,13 @@ async function askNextQuestion(chatId: string) {
         ], {resize: true});
         await bot.sendMessage(chatId, messageRegistry.getTranslations(user.lang).finalMessage, {replyMarkup});
     }
+
     const messageText = messageRegistry.getTranslations(user.lang)[nextStep.key];
     const options: any = {};
     if (nextStep.buttons) {
         options.replyMarkup = buildInlineKeyBoard(nextStep, user.lang);
     }
+
     await bot.sendMessage(chatId, messageText, options);
 }
 
@@ -169,9 +178,7 @@ function buildAskContactKeyboard(step: FlowStep, lang: string) {
 
 async function handleLanguageChange(msg: any, lang: string) {
     const chatId = msg.message.chat.id;
-    let replyMarkup = bot.keyboard([
-        [BUTTONS[`restart_${lang}`].label],
-    ], {resize: true});
+    const replyMarkup = bot.keyboard([[BUTTONS[`restart_${lang}`].label]], {resize: true});
     await bot.sendMessage(chatId, messageRegistry.getTranslations(lang).languageChangedMsg, {replyMarkup});
 }
 
@@ -179,10 +186,8 @@ async function handlePhoneNumberSet(msg: any, phone_number: string) {
     const chatId = msg.chat.id;
     const user =  await userService.findUserByChatId(chatId);
     await botController.saveStep(chatId, phone_number);
-    let replyMarkup = bot.keyboard([
-        [BUTTONS[`restart_${user.lang}`].label],
-    ], {resize: true});
-    await bot.sendMessage(chatId, messageRegistry.getTranslations(user.lang).phoneNumberSaved, {replyMarkup});
+    const replyMarkup = bot.keyboard([[BUTTONS[`restart_${user.lang}`].label]], { resize: true });
+    await bot.sendMessage(chatId, messageRegistry.getTranslations(user.lang).phoneNumberSaved, { replyMarkup });
     await askNextQuestion(chatId);
 }
 

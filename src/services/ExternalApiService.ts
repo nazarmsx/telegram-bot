@@ -38,9 +38,8 @@ export class ExternalApiService {
             type_test: user.testType,
             order_source: `${user.messenger}_${user.region === 'kyiv' ? 'kbp' : user.region === 'odesa' ? 'ods' : 'khr'}`
         };
-        
+
         const reqUrl = `${this.BASE_URL}/test_chat.php`;
-        console.log(`FETCHING: ${reqUrl} `, request);
         let [err, resp] = await to(axios.post(reqUrl, request));
         if (err) {
             logger.error(err);

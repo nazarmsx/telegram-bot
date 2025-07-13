@@ -20,9 +20,11 @@ export function getPublicUrl(): Promise<string> {
                 resolve(httpsTunnel.public_url);
             });
         });
+
         req.on('error', function (e) {
             reject(e.message);
         });
+        
         req.end();
     });
 }

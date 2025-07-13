@@ -1,9 +1,9 @@
+import moment from 'moment';
 import { BotFlow, KyivBotFlow, FlowStep } from './BotFlow';
 import { ExternalApiService, UserService } from '../services';
-import { container, injectable } from "tsyringe";
-import { IUser } from "../models";
-import { REGION } from "../util/secrets";
-import moment from 'moment';
+import { container, injectable } from 'tsyringe';
+import { IUser } from '../models';
+import { REGION } from '../util/secrets';
 
 const botFlow = REGION === 'kyiv' ? container.resolve(KyivBotFlow): container.resolve(BotFlow);
 @injectable()
@@ -25,20 +25,24 @@ export class BotController {
         if (!user.stepId) {
             return botFlow.getBotFlowSteps()[0]
         }
+
         let res: FlowStep = null;
         flowSteps.forEach((item, index, array) => {
             if (item.key === user.stepId && index + 1 < array.length) {
                 res = array[index+1];
             }
         });
+
         if (res && res.key === 'askPhoneIsRegisteredInDiia' && (user.testType !== 'PCR' || (user.region === 'kyiv' && user.testPurpose != 'arrival'))) {
             await this.userService.updateUserFields(chatId, {stepId: 'askPhoneIsRegisteredInDiia', phoneNumberIsRegisteredInDiia: null});
             return await this.getNextStep(chatId);
         }
+
         if (res && res.key === 'getOtherPhoneNumber' && (user.phoneNumberIsRegisteredInDiia === true || user.phoneNumberIsRegisteredInDiia === null)) {
             await this.userService.updateUserFields(chatId, {stepId: 'getOtherPhoneNumber'});
             return await this.getNextStep(chatId);
         }
+
         if(!res){
             const resp = await this.externalApiService.sendOrder(user);
             return {
@@ -55,19 +59,23 @@ export class BotController {
                 ]
             };
         }
+
         return res;
     }
 
     public async saveStep(chatId: string, value: any) {
         const flowStep = await this.getNextStep(chatId);
         if (flowStep) {
-            if(flowStep.type === 'date'){
+
+            if (flowStep.type === 'date') {
                 value = moment(value, 'DD-MM-YYYY').toDate();
             }
+
             const updateFields: IUser = {
                 [flowStep.targetField] : value,
                 stepId: flowStep.key
             };
+            
             await this.userService.updateUserFields(chatId, updateFields);
         }
     }

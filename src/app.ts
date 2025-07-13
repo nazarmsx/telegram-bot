@@ -7,18 +7,14 @@ import path from 'path';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import { MONGODB_URI } from './util/secrets';
-import {container} from 'tsyringe';
-import {UserService, DBService} from './services';
-import {BotFlow} from './bot-utils';
-
+import { container} from 'tsyringe';
+import { UserService, DBService } from './services';
+import { BotFlow } from './bot-utils';
+import  logger from './util/logger';
 container.register<UserService>(UserService, {useClass: UserService});
 container.register<DBService>(DBService, {useClass: DBService});
 container.register<BotFlow>(BotFlow, {useClass: BotFlow});
 
-
-
-
-// Create Express server
 const app = express();
 
 // Connect to MongoDB
@@ -28,9 +24,9 @@ mongoose.Promise = global.Promise;
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true ,useFindAndModify:true, } ).then(
     () => { mongoose.set('debug',true); },
 ).catch(err => {
-    console.log('MongoDB connection error. Please make sure MongoDB is running. ' + err);
-    // process.exit();
+    logger.log('MongoDB connection error. Please make sure MongoDB is running. ' + err);
 });
+
 mongoose.set('debug', true);
 // Express configuration
 app.set('port', process.env.PORT || 3000);
