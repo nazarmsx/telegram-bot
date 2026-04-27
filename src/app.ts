@@ -19,12 +19,11 @@ const app = express();
 
 // Connect to MongoDB
 const mongoUrl = MONGODB_URI;
-mongoose.Promise = global.Promise;
 
-mongoose.connect(mongoUrl, { useNewUrlParser: true, useCreateIndex: true ,useFindAndModify:true, } ).then(
+mongoose.connect(mongoUrl).then(
     () => { mongoose.set('debug',true); },
 ).catch(err => {
-    logger.log('MongoDB connection error. Please make sure MongoDB is running. ' + err);
+    logger.error('MongoDB connection error. Please make sure MongoDB is running. ' + err);
 });
 
 mongoose.set('debug', true);

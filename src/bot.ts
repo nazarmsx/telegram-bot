@@ -7,9 +7,8 @@ import logger from './util/logger';
 
 container.default;
 const mongoUrl = MONGODB_URI;
-mongoose.Promise = global.Promise;
 
-mongoose.connect(mongoUrl, {useNewUrlParser: true, useCreateIndex: true, useFindAndModify: true,}).then(
+mongoose.connect(mongoUrl).then(
     () => {
         startBot();
         if (VIBER_WEBHOOK) {
@@ -19,11 +18,11 @@ mongoose.connect(mongoUrl, {useNewUrlParser: true, useCreateIndex: true, useFind
         mongoose.set('debug', true);
     },
 ).catch((err) => {
-    logger.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
+    logger.error("MongoDB connection error. Please make sure MongoDB is running. " + err);
 });
 
 
 process.on('unhandledRejection', err => {
-    logger.log("Caught unhandledRejection");
-    logger.error(err)
+    logger.error("Caught unhandledRejection");
+    logger.error(err);
 });

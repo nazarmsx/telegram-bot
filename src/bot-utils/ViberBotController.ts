@@ -56,7 +56,7 @@ export async function startViberBot() {
     if(!publicUrl){
         let [err, ngRockProxyUrl] = await to(getPublicUrl());
         if (err) {
-            logger.log('Can not connect to ngrok server. Is it running?');
+            logger.info('Can not connect to ngrok server. Is it running?');
             logger.error(err);
             return
         }

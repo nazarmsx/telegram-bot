@@ -1,5 +1,5 @@
 # Telegram Bot  🤖
-Allows to sign up to a Covid-19 test using telegram messenger. Bot was written using Node.js, TS, telebot lib, Mongo. The main project idea was to make enrolemnent to a Covid-19 test at the airport for passenger easier.
+Allows to sign up to a Covid-19 test using telegram messenger. Bot was written using Node.js, TS, a small Telegram Bot API client on `fetch`, Mongo. The main project idea was to make enrolemnent to a Covid-19 test at the airport for passenger easier.
 
 ## Features:
 * multi lang support based on user locale

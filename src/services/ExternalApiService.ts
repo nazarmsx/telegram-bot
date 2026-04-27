@@ -46,7 +46,7 @@ export class ExternalApiService {
         }
 
         if (resp) {
-            logger.log('RESP: ', resp.data);
+            logger.info(`RESP: ${JSON.stringify(resp.data)}`);
         }
 
         return resp.data;

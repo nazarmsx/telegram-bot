@@ -10,12 +10,10 @@ app.use(errorHandler());
  * Start Express server.
  */
 const server = app.listen(app.get('port'), () => {
-    logger.log(
-        '  App is running at http://localhost:%d in %s mode',
-        app.get('port'),
-        app.get('env')
+    logger.info(
+        `  App is running at http://localhost:${String(app.get('port'))} in ${String(app.get('env'))} mode`
     );
-    logger.log('  Press CTRL-C to stop\n');
+    logger.info('  Press CTRL-C to stop\n');
 });
 
 export default server;
